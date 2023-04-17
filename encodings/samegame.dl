@@ -1,0 +1,20 @@
+row(0..9).
+col(0..19).
+
+#show rimuovi/3.
+
+adj(X, Y, X1, Y) :- row(X), row(X1), col(Y), X1 = X+1.
+adj(X, Y, X1, Y) :- row(X), row(X1), col(Y), X1 = X-1.
+adj(X, Y, X, Y1) :- row(X), col(Y), col(Y1), Y1 = Y+1.
+adj(X, Y, X, Y1) :- row(X), col(Y), col(Y1), Y1 = Y-1.
+
+canReach(X, Y, X1, Y1) :- cell(X, Y, Col), cell(X1, Y1, Col), adj(X, Y, X1, Y1).
+canReach(X, Y, X1, Y1) :- canReach(X, Y, X2, Y2), canReach(X2, Y2, X1, Y1).
+
+rimuovi(X, Y, Col) | nonRimuovi(X, Y, Col) :- cell(X, Y, Col).
+
+:- rimuovi(X, Y, _), rimuovi(X1, Y1, _), not canReach(X, Y, X1, Y1).
+
+:- #count{X, Y : rimuovi(X, Y, _)} < 2.
+
+:~ nonRimuovi(X, Y, _). [1@1, X, Y]
